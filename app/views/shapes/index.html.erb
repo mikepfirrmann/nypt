@@ -1,0 +1,29 @@
+<h1>Listing shapes</h1>
+
+<table>
+  <tr>
+    <th>Latitude</th>
+    <th>Longitude</th>
+    <th>Sequence</th>
+    <th>Distance traveled</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @shapes.each do |shape| %>
+  <tr>
+    <td><%= shape.latitude %></td>
+    <td><%= shape.longitude %></td>
+    <td><%= shape.sequence %></td>
+    <td><%= shape.distance_traveled %></td>
+    <td><%= link_to 'Show', shape %></td>
+    <td><%= link_to 'Edit', edit_shape_path(shape) %></td>
+    <td><%= link_to 'Destroy', shape, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Shape', new_shape_path %>

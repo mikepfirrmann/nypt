@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Headsign:</b>
+  <%= @trip.headsign %>
+</p>
+
+<p>
+  <b>Direction:</b>
+  <%= @trip.direction_id %>
+</p>
+
+<p>
+  <b>Block:</b>
+  <%= @trip.block_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_trip_path(@trip) %> |
+<%= link_to 'Back', trips_path %>

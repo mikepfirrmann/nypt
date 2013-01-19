@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  arrival_time: 2013-01-19 02:38:41
+  departure_time: 2013-01-19 02:38:41
+  sequence: 1
+  pickup_type: 1
+  drop_off_type: 1
+  distance_traveled: 1.5
+
+two:
+  arrival_time: 2013-01-19 02:38:41
+  departure_time: 2013-01-19 02:38:41
+  sequence: 1
+  pickup_type: 1
+  drop_off_type: 1
+  distance_traveled: 1.5

@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Arrival time:</b>
+  <%= @stop_time.arrival_time %>
+</p>
+
+<p>
+  <b>Departure time:</b>
+  <%= @stop_time.departure_time %>
+</p>
+
+<p>
+  <b>Sequence:</b>
+  <%= @stop_time.sequence %>
+</p>
+
+<p>
+  <b>Pickup type:</b>
+  <%= @stop_time.pickup_type %>
+</p>
+
+<p>
+  <b>Drop off type:</b>
+  <%= @stop_time.drop_off_type %>
+</p>
+
+<p>
+  <b>Distance traveled:</b>
+  <%= @stop_time.distance_traveled %>
+</p>
+
+
+<%= link_to 'Edit', edit_stop_time_path(@stop_time) %> |
+<%= link_to 'Back', stop_times_path %>

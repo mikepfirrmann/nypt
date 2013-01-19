@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Short name:</b>
+  <%= @route.short_name %>
+</p>
+
+<p>
+  <b>Long name:</b>
+  <%= @route.long_name %>
+</p>
+
+<p>
+  <b>Type:</b>
+  <%= @route.type %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%= @route.url %>
+</p>
+
+<p>
+  <b>Color:</b>
+  <%= @route.color %>
+</p>
+
+
+<%= link_to 'Edit', edit_route_path(@route) %> |
+<%= link_to 'Back', routes_path %>

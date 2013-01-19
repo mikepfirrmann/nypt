@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  headsign: MyString
+  direction_id: 1
+  block_id: MyString
+
+two:
+  headsign: MyString
+  direction_id: 1
+  block_id: MyString

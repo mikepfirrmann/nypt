@@ -1,4 +1,18 @@
 Nyptr::Application.routes.draw do
+  resources :trips
+
+  resources :stops
+
+  resources :stop_times
+
+  resources :shapes
+
+  resources :routes
+
+  resources :calendar_dates
+
+  resources :agencies
+
   resources :departures
 
 

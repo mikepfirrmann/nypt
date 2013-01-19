@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Code:</b>
+  <%= @stop.code %>
+</p>
+
+<p>
+  <b>Short name:</b>
+  <%= @stop.short_name %>
+</p>
+
+<p>
+  <b>Long name:</b>
+  <%= @stop.long_name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @stop.description %>
+</p>
+
+<p>
+  <b>Latitude:</b>
+  <%= @stop.latitude %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%= @stop.longitude %>
+</p>
+
+<p>
+  <b>Zone:</b>
+  <%= @stop.zone %>
+</p>
+
+
+<%= link_to 'Edit', edit_stop_path(@stop) %> |
+<%= link_to 'Back', stops_path %>

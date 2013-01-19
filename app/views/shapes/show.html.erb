@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Latitude:</b>
+  <%= @shape.latitude %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%= @shape.longitude %>
+</p>
+
+<p>
+  <b>Sequence:</b>
+  <%= @shape.sequence %>
+</p>
+
+<p>
+  <b>Distance traveled:</b>
+  <%= @shape.distance_traveled %>
+</p>
+
+
+<%= link_to 'Edit', edit_shape_path(@shape) %> |
+<%= link_to 'Back', shapes_path %>

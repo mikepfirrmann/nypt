@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @agency.name %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%= @agency.url %>
+</p>
+
+<p>
+  <b>Timezone:</b>
+  <%= @agency.timezone %>
+</p>
+
+<p>
+  <b>Language:</b>
+  <%= @agency.language %>
+</p>
+
+<p>
+  <b>Phone:</b>
+  <%= @agency.phone %>
+</p>
+
+
+<%= link_to 'Edit', edit_agency_path(@agency) %> |
+<%= link_to 'Back', agencies_path %>
