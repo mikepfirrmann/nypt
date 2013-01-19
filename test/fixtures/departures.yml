@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  trip_id: MyString
+  track: 1
+  day: 2013-01-10
+
+two:
+  trip_id: MyString
+  track: 1
+  day: 2013-01-10
