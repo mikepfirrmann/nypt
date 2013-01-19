@@ -1,5 +1,3 @@
-
-
 class Departure
 
   @@nj_transit = nil

@@ -1,11 +1,11 @@
-require 'gtfs'
+require 'net/http'
 require 'nokogiri'
-require '../lib/departure.rb'
 
-html = ''
-File.open("../var/dv.html") { |f| html = f.read }
+# html = ''
+# File.open("../var/dv.html") { |f| html = f.read }
 
-departures = []
+req = Net::HTTP.get_response(URI.parse('http://dv.njtransit.com/mobile/tid-mobile.aspx?SID=NY'))
+html = req.body
 
 html_document = Nokogiri::HTML(html)
 rows = html_document.css('table')[1].css('tr')
@@ -18,13 +18,14 @@ rows.each do |row|
     time, trip_id = columns.first.gsub(/\s/, '').split('/')
   else
     track = columns.first.gsub(/[^0-9]/, '').to_i
-    # departure[:status] = columns.last
 
-    departure = Departure.new trip_id, track
-    departures << departure if departure.valid?
+    departure = Departure.new({
+      :trip_id => trip_id,
+      :track => track,
+      :day => Date.today,
+    }).save!
 
     trip_id = nil
   end
 end
 
-puts departures
