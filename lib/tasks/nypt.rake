@@ -7,9 +7,6 @@ namespace :nypt do
   desc "Save any listed track numbers for New York Penn Station departures"
   task :save_departures => :environment do
 
-    # html = ''
-    # File.open("../var/dv.html") { |f| html = f.read }
-
     req = Net::HTTP.get_response(URI.parse(NYP_DEPARTURE_VISION_URL))
     html = req.body
 
