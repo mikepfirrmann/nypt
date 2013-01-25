@@ -1,9 +1,13 @@
 class CalendarDate < ActiveRecord::Base
+  belongs_to :service
+
+  has_many :departures
+
   def self.date_integer
     local_time.strftime('%Y%m%d').to_i
   end
 
-  def for_time(time_string)
+  def self.for_time(time_string)
     # If it is in the 11PM hour and the input time is in the 12AM hour,
     # the date for the string is tomorrow.
     if local_time.strftime('%H').to_i.eql?(23) && time_string.strip.to_i.eql?(12)

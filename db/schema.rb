@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119043107) do
+ActiveRecord::Schema.define(:version => 20130125142102) do
 
   create_table "agencies", :force => true do |t|
     t.string   "name"
@@ -19,6 +19,11 @@ ActiveRecord::Schema.define(:version => 20130119043107) do
     t.string   "timezone"
     t.string   "language"
     t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "blocks", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -34,11 +39,12 @@ ActiveRecord::Schema.define(:version => 20130119043107) do
   add_index "calendar_dates", ["service_id"], :name => "index_calendar_dates_on_service_id"
 
   create_table "departures", :force => true do |t|
-    t.string   "trip_id"
+    t.string   "block_id"
     t.integer  "track"
-    t.date     "day"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "calendar_date_id"
+    t.integer  "service_id"
   end
 
   create_table "routes", :force => true do |t|
@@ -53,6 +59,11 @@ ActiveRecord::Schema.define(:version => 20130119043107) do
   end
 
   add_index "routes", ["agency_id"], :name => "index_routes_on_agency_id"
+
+  create_table "services", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "shapes", :force => true do |t|
     t.float    "latitude"
@@ -97,7 +108,7 @@ ActiveRecord::Schema.define(:version => 20130119043107) do
     t.integer  "shape_id"
     t.string   "headsign"
     t.integer  "direction_id"
-    t.string   "block_id"
+    t.integer  "block_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

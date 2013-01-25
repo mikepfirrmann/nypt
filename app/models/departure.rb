@@ -1,6 +1,7 @@
 class Departure < ActiveRecord::Base
-  belongs_to :trip
+  belongs_to :block
+  belongs_to :calendar_date
+  belongs_to :service
 
-  validates :day, :presence => true
   validates :track, :numericality => { :only_integer => true, :greater_than => 0 }
 end

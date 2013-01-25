@@ -1,4 +1,8 @@
 Nyptr::Application.routes.draw do
+  resources :services
+
+  resources :blocks
+
   resources :trips
 
   resources :stops

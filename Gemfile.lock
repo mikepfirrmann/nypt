@@ -1,3 +1,11 @@
+PATH
+  remote: /home/ec2-user/gtfs
+  specs:
+    gtfs (0.2.1)
+      multi_json
+      rake
+      rubyzip
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -32,6 +40,7 @@ GEM
     arel (2.2.3)
     builder (3.0.4)
     chronic (0.9.0)
+    coderay (1.0.8)
     coffee-rails (3.1.1)
       coffee-script (>= 2.2.0)
       railties (~> 3.1.0)
@@ -44,10 +53,6 @@ GEM
     execjs (1.4.0)
       multi_json (~> 1.0)
     fastthread (1.0.7)
-    gtfs (0.2.1)
-      multi_json
-      rake
-      rubyzip
     hike (1.2.1)
     i18n (0.6.1)
     jquery-rails (2.1.4)
@@ -59,6 +64,7 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    method_source (0.8.1)
     mime-types (1.19)
     multi_json (1.2.0)
     mysql (2.8.1)
@@ -69,6 +75,12 @@ GEM
       rack
       rake (>= 0.8.1)
     polyglot (0.3.3)
+    pry (0.9.11.4)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    pry-rails (0.2.2)
+      pry (>= 0.9.10)
     rack (1.3.8)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -104,6 +116,7 @@ GEM
       railties (~> 3.1.0)
       sass (>= 3.1.10)
       tilt (~> 1.3.2)
+    slop (3.4.3)
     sprockets (2.0.4)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -126,12 +139,13 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 3.1.1)
-  gtfs
+  gtfs!
   jquery-rails
   libv8 (~> 3.11.8)
   mysql (= 2.8.1)
   nokogiri
   passenger
+  pry-rails
   rails (= 3.1.10)
   sass-rails (~> 3.1.5)
   therubyracer

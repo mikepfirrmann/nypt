@@ -13,35 +13,41 @@ namespace :nypt do
     html_document = Nokogiri::HTML(html)
     rows = html_document.css('table')[1].css('tr')
 
-    trip_id = nil
+    block_id = nil
     rows.each do |row|
       columns = row.css('td').map { |col| col.content.strip }
 
-      if trip_id.nil?
-        time, trip_id = columns.first.gsub(/\s/, '').split('/')
+      if block_id.nil?
+        time, block_id = columns.first.gsub(/\s/, '').split('/')
       else
         track = columns.first.gsub(/[^0-9]/, '').to_i
 
-        # If a departure was created with this trip_id in the last 12 hours,
-        # only update it if the track assignment has changed. We can't simply
-        # look for a Departure with the given trip_id and :day == Date.today
-        # because of timezone issues.
-        if departure = Departure.where(
-          "created_at > ? AND trip_id = ?",
-          Time.now - 12.hours,
-          trip_id
-        ).first
-          departure.save unless track.eql?(departure.track)
-        else
-          departure = Departure.new({
-            :trip_id => trip_id,
-            :track => track,
-            :day => Date.today,
-          })
-          departure.save
+        if track > 0
+          calendar_date = CalendarDate.for_time time
+          block = Block.where(:id => block_id.to_i).first
+
+          if calendar_date && block
+            if departure = Departure.where(
+              :calendar_date_id => calendar_date.id,
+              :block_id => block.id
+            ).first
+              unless track.eql?(departure.track)
+                departure.track = track
+                departure.save
+              end
+            else
+              departure = Departure.new do |departure|
+                departure.block_id = block.id
+                departure.calendar_date_id = calendar_date.id
+                departure.service_id = calendar_date.service.id
+                departure.track = track
+              end
+              departure.save
+            end
+          end
         end
 
-        trip_id = nil
+        block_id = nil
       end
     end
 

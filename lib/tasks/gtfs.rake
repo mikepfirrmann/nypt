@@ -39,19 +39,20 @@ namespace :gtfs do
   task :save_calendar_dates => :load_into_memory do
     $nj_transit.each_calendar_date do |old_obj|
       date = old_obj.date.to_i
+      service = Service.find_or_create! :id => old_obj.service_id.to_i
 
       if caledar_date = CalendarDate.where(:id => date).first
-        next if caledar_date.service_id.eql?(old_obj.service_id)
+        next if caledar_date.service.eql?(service)
         next if caledar_date.exception_type.eql?(old_obj.exception_type)
 
-        caledar_date.service_id = old_obj.service_id
+        caledar_date.service = old_obj.service
         caledar_date.exception_type = old_obj.exception_type
 
         caledar_date.save
       else
         new_obj = CalendarDate.new do |obj|
           obj.id = date
-          obj.service_id = old_obj.service_id
+          obj.service = service
           obj.exception_type = old_obj.exception_type
         end
         new_obj.save
@@ -119,14 +120,19 @@ namespace :gtfs do
     Trip.truncate
 
     $nj_transit.each_trip do |old_obj|
+      block = Block.find_or_create! :id => old_obj.block_id.to_i
+      service = Service.find_or_create! :id => old_obj.service_id.to_i
+
       new_obj = Trip.new do |obj|
         obj.id = old_obj.id
+
+        obj.block = block
+        obj.service = service
+
         obj.route_id = old_obj.route_id
-        obj.service_id = old_obj.service_id
         obj.shape_id = old_obj.shape_id
         obj.direction_id = old_obj.direction_id
         obj.headsign = old_obj.headsign
-        obj.block_id = old_obj.block_id
       end
       new_obj.save
     end

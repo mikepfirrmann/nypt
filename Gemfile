@@ -21,9 +21,11 @@ end
 gem 'jquery-rails'
 
 gem 'nokogiri'
-gem 'gtfs'
+gem 'gtfs', :path => '/home/ec2-user/gtfs'
 gem 'whenever', :require => false
 gem 'passenger'
+
+gem 'pry-rails', :group => :development
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
