@@ -27,9 +27,14 @@ namespace :nypt do
           block = Block.where(:id => block_id.to_i).first
 
           if calendar_date && block
+            trip = Trip.where(
+              :service_id => calendar_date.services.map(&:id),
+              :block_id => block.id
+            ).first
+
             if departure = Departure.where(
               :calendar_date_id => calendar_date.id,
-              :block_id => block.id
+              :trip_id => trip.id
             ).first
               unless track.eql?(departure.track)
                 departure.track = track
@@ -37,9 +42,8 @@ namespace :nypt do
               end
             else
               departure = Departure.new do |departure|
-                departure.block_id = block.id
+                departure.trip_id = trip.id
                 departure.calendar_date_id = calendar_date.id
-                departure.service_id = calendar_date.service.id
                 departure.track = track
               end
               departure.save

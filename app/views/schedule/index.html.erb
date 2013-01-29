@@ -1,0 +1,31 @@
+<h1>Departures</h1>
+
+<table>
+  <tr>
+    <th><%= @schedule.origin.short_name %></th>
+    <th><%= @schedule.destination.short_name %></th>
+    <% if @departs_ny_penn %>
+      <th>Track</th>
+    <% end %>
+  </tr>
+<% time_format = "%l:%M%P" %>
+<% @trips.each do |trip| %>
+  <tr>
+    <td><%= @schedule.origin_time(trip).strftime(time_format).strip %></td>
+    <td><%= @schedule.destination_time(trip).strftime(time_format).strip %></td>
+    <% if @departs_ny_penn %>
+      <td><%=
+        trip.predict_track.map do |track|
+          if track[:today]
+            track[:number]
+          else
+            "#{track[:number]} (#{track[:count]}x #{number_to_percentage(track[:confidence]*100, :precision => 0)})"
+          end
+        end.join(', ')
+      %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+<span style="display: none">Generated in <%= Time.now - @start %> seconds</span>
+<p>As of <%= @now.strftime(time_format) %></p>

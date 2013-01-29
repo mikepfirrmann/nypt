@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130125142102) do
+ActiveRecord::Schema.define(:version => 20130129145258) do
 
   create_table "agencies", :force => true do |t|
     t.string   "name"
@@ -28,30 +28,38 @@ ActiveRecord::Schema.define(:version => 20130125142102) do
     t.datetime "updated_at"
   end
 
-  create_table "calendar_dates", :force => true do |t|
+  create_table "calendar_date_services", :force => true do |t|
+    t.integer  "calendar_date_id"
     t.integer  "service_id"
-    t.string   "date"
     t.integer  "exception_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "calendar_dates", ["service_id"], :name => "index_calendar_dates_on_service_id"
+  add_index "calendar_date_services", ["calendar_date_id"], :name => "index_calendar_date_services_on_calendar_date_id"
+  add_index "calendar_date_services", ["service_id"], :name => "index_calendar_date_services_on_service_id"
+
+  create_table "calendar_dates", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "departures", :force => true do |t|
-    t.string   "block_id"
     t.integer  "track"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "calendar_date_id"
-    t.integer  "service_id"
+    t.integer  "trip_id"
   end
+
+  add_index "departures", ["trip_id", "calendar_date_id"], :name => "trip_id_and_calendar_date_id", :unique => true
+  add_index "departures", ["trip_id"], :name => "index_departures_on_trip_id"
 
   create_table "routes", :force => true do |t|
     t.integer  "agency_id"
     t.string   "short_name"
     t.string   "long_name"
-    t.integer  "type"
+    t.integer  "route_type"
     t.string   "url"
     t.string   "color"
     t.datetime "created_at"
@@ -77,8 +85,8 @@ ActiveRecord::Schema.define(:version => 20130125142102) do
   create_table "stop_times", :force => true do |t|
     t.integer  "trip_id"
     t.integer  "stop_id"
-    t.time     "arrival_time"
-    t.time     "departure_time"
+    t.string   "arrival_time"
+    t.string   "departure_time"
     t.integer  "sequence"
     t.integer  "pickup_type"
     t.integer  "drop_off_type"
@@ -100,7 +108,13 @@ ActiveRecord::Schema.define(:version => 20130125142102) do
     t.integer  "zone"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "slug"
+    t.integer  "route_type"
   end
+
+  add_index "stops", ["route_type"], :name => "index_stops_on_route_type"
+  add_index "stops", ["slug", "route_type"], :name => "slug_and_route_type", :unique => true
+  add_index "stops", ["slug"], :name => "index_stops_on_slug"
 
   create_table "trips", :force => true do |t|
     t.integer  "route_id"

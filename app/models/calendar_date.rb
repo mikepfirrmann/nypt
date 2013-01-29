@@ -1,7 +1,10 @@
 class CalendarDate < ActiveRecord::Base
-  belongs_to :service
+  has_many :calendar_date_services
+  has_many :services, :through => :calendar_date_services
 
   has_many :departures
+
+  @@timezone = nil
 
   def self.date_integer
     local_time.strftime('%Y%m%d').to_i
@@ -17,13 +20,21 @@ class CalendarDate < ActiveRecord::Base
     today
   end
 
-  def self.local_time
-    timezone_identifier = Agency.first.timezone
+  def self.local_time(time_str = nil)
+    return timezone.now if time_str.nil?
 
-    timezone_name = ActiveSupport::TimeZone::MAPPING.key(timezone_identifier)
-    timezone = ActiveSupport::TimeZone.all.select { |tz| tz.name.eql?(timezone_name) }.first
+    timezone.parse(time_str)
+  end
 
-    timezone.now
+  def self.timezone
+    if @@timezone.nil?
+      timezone_identifier = Agency.first.timezone
+
+      timezone_name = ActiveSupport::TimeZone::MAPPING.key(timezone_identifier)
+      @@timezone = ActiveSupport::TimeZone.all.select { |tz| tz.name.eql?(timezone_name) }.first
+    end
+
+    @@timezone
   end
 
   def self.today

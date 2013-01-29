@@ -1,4 +1,5 @@
 require 'gtfs'
+require 'title.rb'
 
 namespace :gtfs do
 
@@ -11,11 +12,12 @@ namespace :gtfs do
   task :all => [
     :load_into_memory,
     :save_agencies,
+    :save_routes,
     :save_calendar_dates,
     # :save_shapes,
-    :save_stops,
     :save_stop_times,
     :save_trips,
+    :save_stops,
   ]
 
   desc "Save Agencies to a database"
@@ -35,28 +37,48 @@ namespace :gtfs do
     end
   end
 
+  desc "Save Routes to a database"
+  task :save_routes => :load_into_memory do
+    Route.truncate
+
+    $nj_transit.each_route do |old_obj|
+      short_name = old_obj.short_name.blank? ? Title.new(old_obj.long_name).initials : old_obj.short_name
+      long_name = old_obj.long_name
+
+      # Inexplicable special case. Seems to be a special case of the
+      # Gladstone line that includes Seacaucus and excludes East Orange,
+      # Hoboken, and Mountain Station.
+      if long_name.blank? && short_name.eql?('MNRG')
+        long_name = 'Gladstone Branch'
+      end
+
+      new_obj = Route.new do |obj|
+        obj.id = old_obj.id.to_i
+        obj.agency_id = old_obj.agency_id.to_i
+        obj.short_name = short_name
+        obj.long_name = long_name
+        obj.route_type = old_obj.type
+        obj.url = old_obj.url
+        obj.color = old_obj.color
+      end
+      new_obj.save
+    end
+  end
+
   desc "Save CalendarDates to a database"
   task :save_calendar_dates => :load_into_memory do
+    CalendarDateService.truncate
+
     $nj_transit.each_calendar_date do |old_obj|
-      date = old_obj.date.to_i
+      calendar_date = CalendarDate.find_or_create! :id => old_obj.date.to_i
       service = Service.find_or_create! :id => old_obj.service_id.to_i
 
-      if caledar_date = CalendarDate.where(:id => date).first
-        next if caledar_date.service.eql?(service)
-        next if caledar_date.exception_type.eql?(old_obj.exception_type)
-
-        caledar_date.service = old_obj.service
-        caledar_date.exception_type = old_obj.exception_type
-
-        caledar_date.save
-      else
-        new_obj = CalendarDate.new do |obj|
-          obj.id = date
-          obj.service = service
-          obj.exception_type = old_obj.exception_type
-        end
-        new_obj.save
+      new_obj = CalendarDateService.new do |obj|
+        obj.calendar_date_id = calendar_date.id
+        obj.service_id = service.id
+        obj.exception_type = old_obj.exception_type
       end
+      new_obj.save
     end
   end
 
@@ -83,15 +105,30 @@ namespace :gtfs do
     Stop.truncate
 
     $nj_transit.each_stop do |old_obj|
+      desc = old_obj.desc.blank? ? old_obj.name : old_obj.desc
+
+      if 42545.eql?(old_obj.id.to_i)
+        old_name = "#{old_obj.name} Transfer"
+      else
+        old_name = old_obj.name
+      end
+      title = Title.new old_name
+
+      route_type = StopTime.where(:stop_id => old_obj.id).first.trip.route.route_type
+
       new_obj = Stop.new do |obj|
         obj.id = old_obj.id
-        obj.long_name = old_obj.name
+        obj.slug = title.parameterized
+        obj.short_name = title.short
+        obj.long_name = title.long
         obj.latitude = old_obj.lat
         obj.longitude = old_obj.lon
         obj.code = old_obj.code
-        obj.description = old_obj.desc
+        obj.description = desc
         obj.zone = old_obj.zone_id
+        obj.route_type = route_type
       end
+
       new_obj.save
     end
   end

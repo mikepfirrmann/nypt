@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  calendar_date_id: 1
+  service_id: 1
+  exception_type: 1
+
+two:
+  calendar_date_id: 1
+  service_id: 1
+  exception_type: 1

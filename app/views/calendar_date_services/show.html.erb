@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Calendar date:</b>
+  <%= @calendar_date_service.calendar_date_id %>
+</p>
+
+<p>
+  <b>Service:</b>
+  <%= @calendar_date_service.service_id %>
+</p>
+
+<p>
+  <b>Exception type:</b>
+  <%= @calendar_date_service.exception_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_calendar_date_service_path(@calendar_date_service) %> |
+<%= link_to 'Back', calendar_date_services_path %>

@@ -21,6 +21,6 @@
 
 job_type :rake_with_env, "cd :path && export NYPT_DB_PASSWORD=\"#{ENV['NYPT_DB_PASSWORD']}\" && RAILS_ENV=:environment bundle exec rake :task --silent :output"
 
-every 2.minutes do
+every 4.minutes do
   rake_with_env 'nypt:save_departures', :environment => 'development'
 end

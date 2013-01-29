@@ -1,24 +1,8 @@
 Nyptr::Application.routes.draw do
-  resources :services
+  match 'from/(:origin(/to(/:destination)))' => 'schedule#index'
+  match 'to/(:destination)' => 'schedule#index'
 
-  resources :blocks
-
-  resources :trips
-
-  resources :stops
-
-  resources :stop_times
-
-  resources :shapes
-
-  resources :routes
-
-  resources :calendar_dates
-
-  resources :agencies
-
-  resources :departures
-
+  root :to => 'schedule#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
