@@ -20,15 +20,16 @@ class Schedule
   end
 
   def today
+    start = Time.now
+
     origin_stop_times = []
     destination_stop_times = []
 
-    Trip.
+    trips = Trip.
       where(:service_id => CalendarDate.today.services.map(&:id)).
-      includes(:stops).
-      where(:stops => {:id => [@origin.id, @destination.id] }).
       includes(:stop_times).
-      all.
+      where(:stop_times => {:stop_id => [@origin.id, @destination.id] }).
+      uniq.
       select do |trip|
         origin_time = trip.stop_times.select {|t| t.stop_id.eql?(@origin.id) }.first
         destination_time = trip.stop_times.select {|t| t.stop_id.eql?(@destination.id) }.first
@@ -38,6 +39,10 @@ class Schedule
         next(true)
       end.
       sort_by {|t| t.stop_times.first.departure_time}
+
+      puts Time.now - start
+
+      trips
   end
 
   def origin_time(trip)

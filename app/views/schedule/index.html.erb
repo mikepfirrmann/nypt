@@ -1,18 +1,21 @@
-<h1>Departures</h1>
+<%
+title="Trains from #{@schedule.origin.short_name} to #{@schedule.destination.short_name}"
+content_for(:title, title)
+%><h1><%=h title %></h1>
 
 <table>
   <tr>
-    <th><%= @schedule.origin.short_name %></th>
-    <th><%= @schedule.destination.short_name %></th>
+    <th>Depart</th>
+    <th>Arrive</th>
     <% if @departs_ny_penn %>
       <th>Track</th>
     <% end %>
   </tr>
-<% time_format = "%l:%M%P" %>
 <% @trips.each do |trip| %>
+  <% trip_url = url_for(:controller => 'trips', :action => 'show', :id => trip.id, :destination => @schedule.destination.slug) %>
   <tr>
-    <td><%= @schedule.origin_time(trip).strftime(time_format).strip %></td>
-    <td><%= @schedule.destination_time(trip).strftime(time_format).strip %></td>
+    <td><%= link_to @schedule.origin_time(trip).strftime(@time_template).strip, trip_url %></td>
+    <td><%= link_to @schedule.destination_time(trip).strftime(@time_template).strip, trip_url %></td>
     <% if @departs_ny_penn %>
       <td><%=
         trip.predict_track.map do |track|
@@ -28,4 +31,4 @@
 <% end %>
 </table>
 <span style="display: none">Generated in <%= Time.now - @start %> seconds</span>
-<p>As of <%= @now.strftime(time_format) %></p>
+<p>As of <%= @now.strftime(@time_template) %></p>

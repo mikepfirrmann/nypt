@@ -1,4 +1,5 @@
 require 'schedule'
+require 'pseudo_time'
 
 class ScheduleController < ApplicationController
   # GET /schedule
@@ -9,10 +10,22 @@ class ScheduleController < ApplicationController
     @schedule = Schedule.new params['origin'], params['destination']
     @trips = @schedule.today
     @departs_ny_penn = @schedule.origin.id.eql?(Schedule::NEW_YORK_PENN_ID)
+    @time_template = PseudoTime::TIME_TEMPLATE
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @trips }
+      # TODO: Trim the fat for mobile.
+      format.json {
+        render(
+          :json => {
+            :schedule => @schedule,
+            :trips => @trips,
+            :departure_times => @trips.map { |trip| @schedule.origin_time(trip).strftime(@time_template).strip },
+            :arrival_times => @trips.map { |trip| @schedule.destination_time(trip).strftime(@time_template).strip },
+            :departs_ny_penn => @departs_ny_penn,
+          }
+        )
+      }
     end
   end
 end

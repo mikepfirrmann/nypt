@@ -3,6 +3,8 @@ class PseudoTime
 
   HOURS_IN_DAY = 24
 
+  TIME_TEMPLATE = "%l:%M%P"
+
   attr_reader :hours, :minutes, :seconds
 
   def initialize(time_string)

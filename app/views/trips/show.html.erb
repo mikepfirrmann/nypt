@@ -1,20 +1,34 @@
-<p id="notice"><%= notice %></p>
+<%
+title="#{@arrival_times.first.strftime(@time_template)} Departure from #{@stations.first.long_name} to #{@stations.last.long_name}"
+content_for(:title, title)
+%><h1><%=h title %></h1>
 
-<p>
-  <b>Headsign:</b>
-  <%= @trip.headsign %>
-</p>
+<% if @track_history.is_a?(Array) && @track_history.size > 0 %>
+	<h2>Most Recent Tracks</h2>
+	<ol class="track-history">
+		<% @track_history.each do |departure| %>
+			<li class="past-departure"><%=h departure.track %></li>
+		<% end %>
+	</ol>
+<% end %>
 
-<p>
-  <b>Direction:</b>
-  <%= @trip.direction_id %>
-</p>
+<h2>Stops</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Time</th>
+			<th>Station</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @stations.size.times do |index| %>
+		<% class_name = @stations[index].eql?(@destination) ? 'destination' : '' %>
+		<tr>
+			<td class="<%=h class_name %>"><%=h @arrival_times[index].strftime(@time_template) %></td>
+			<td class="<%=h class_name %>"><%=h @stations[index].long_name %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
 
-<p>
-  <b>Block:</b>
-  <%= @trip.block_id %>
-</p>
-
-
-<%= link_to 'Edit', edit_trip_path(@trip) %> |
-<%= link_to 'Back', trips_path %>
+<span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>

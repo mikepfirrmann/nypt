@@ -2,6 +2,8 @@ Nyptr::Application.routes.draw do
   match 'from/(:origin(/to(/:destination)))' => 'schedule#index'
   match 'to/(:destination)' => 'schedule#index'
 
+  match 'trips/:id(/to/:destination)' => 'trips#show'
+
   root :to => 'schedule#index'
 
   # The priority is based upon order of creation:

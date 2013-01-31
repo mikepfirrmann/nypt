@@ -8,8 +8,12 @@ class Trip < ActiveRecord::Base
   has_many :stop_times
   has_many :stops, :through => :stop_times
 
+  def history
+    departures.sort_by { |d| d.calendar_date_id }.reverse
+  end
+
   def predict_track
-    history = departures.sort_by { |d| d.calendar_date_id }.reverse
+    history = self.history
 
     return [] if history.empty?
 
