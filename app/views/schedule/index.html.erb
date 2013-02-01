@@ -12,7 +12,13 @@ content_for(:title, title)
     <% end %>
   </tr>
 <% @trips.each do |trip| %>
-  <% trip_url = url_for(:controller => 'trips', :action => 'show', :id => trip.id, :destination => @schedule.destination.slug) %>
+  <% trip_url = url_for(
+    :controller => 'trips',
+    :action => 'show',
+    :id => trip.id,
+    :origin => @schedule.origin.slug,
+    :destination => @schedule.destination.slug
+  ) %>
   <tr>
     <td><%= link_to @schedule.origin_time(trip).strftime(@time_template).strip, trip_url %></td>
     <td><%= link_to @schedule.destination_time(trip).strftime(@time_template).strip, trip_url %></td>
@@ -31,4 +37,25 @@ content_for(:title, title)
 <% end %>
 </table>
 <span style="display: none">Generated in <%= Time.now - @start %> seconds</span>
+
 <p>As of <%= @now.strftime(@time_template) %></p>
+
+<footer>
+  <nav>
+    <form action='/' method=get>
+      <fieldset>
+        <legend>Select route</legend>
+        <label>
+          <select name="origin" required>
+            <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.destination.slug)%>
+          </select>
+          <select name="destination" required>
+            <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.origin.slug)%>
+          </select>
+        </label>
+        <input type=submit value=Submit>
+      </fieldset>
+    </form>
+  </nav>
+</footer>
+

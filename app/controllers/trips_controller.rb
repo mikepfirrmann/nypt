@@ -11,6 +11,10 @@ class TripsController < ApplicationController
     @arrival_times = stop_times.map {|stop_time| stop_time.arrival_time.real_local_time}
     @time_template = PseudoTime::TIME_TEMPLATE
 
+    @origin
+    if params[:origin]
+      @origin = Stop.where(:slug => params[:origin]).first
+    end
     @destination = nil
     if params[:destination]
       @destination = Stop.where(:slug => params[:destination]).first

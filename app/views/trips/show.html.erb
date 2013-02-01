@@ -21,14 +21,36 @@ content_for(:title, title)
 		</tr>
 	</thead>
 	<tbody>
-		<% @stations.size.times do |index| %>
-		<% class_name = @stations[index].eql?(@destination) ? 'destination' : '' %>
+	<%
+		@stations.size.times do |index|
+			case @stations[index]
+			when @origin
+				class_name = 'origin'
+			when @destination
+				class_name = 'destination'
+			else
+				class_name = ''
+			end
+	%>
 		<tr>
 			<td class="<%=h class_name %>"><%=h @arrival_times[index].strftime(@time_template) %></td>
 			<td class="<%=h class_name %>"><%=h @stations[index].long_name %></td>
 		</tr>
-		<% end %>
+	<% end %>
 	</tbody>
 </table>
-
 <span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>
+
+<footer>
+  <nav>
+    <%= link_to(
+      "Back to schedule",
+      url_for(
+        :controller => 'schedule',
+        :action => 'index',
+        :origin => @origin.slug,
+        :destination => @destination.slug
+      )
+    ) %>
+  </nav>
+</footer>
