@@ -36,9 +36,9 @@ content_for(:title, title)
   </tr>
 <% end %>
 </table>
-<span style="display: none">Generated in <%= Time.now - @start %> seconds</span>
+<span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>
 
-<p>As of <%= @now.strftime(@time_template) %></p>
+<p>As of <%=h @now.strftime(@time_template) %></p>
 
 <footer>
   <nav>
