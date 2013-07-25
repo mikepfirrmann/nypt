@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.1.10'
+gem 'rails', '3.1.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -38,6 +38,3 @@ gem 'pry-rails', :group => :development
 
 # Deploy with Capistrano
 # gem 'capistrano'
-
-# To use debugger
-# gem 'debugger'

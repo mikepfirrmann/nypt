@@ -1,5 +1,5 @@
 <%
-title="Trains from #{@schedule.origin.short_name} to #{@schedule.destination.short_name}"
+title="Trains from #{@schedule.origin.short_name} to #{@schedule.destination.short_name} on #{@schedule.calendar_date.to_date.to_formatted_s(:long_ordinal)}"
 content_for(:title, title)
 %><h1><%=h title %></h1>
 
@@ -17,7 +17,8 @@ content_for(:title, title)
     :action => 'show',
     :id => trip.id,
     :origin => @schedule.origin.slug,
-    :destination => @schedule.destination.slug
+    :destination => @schedule.destination.slug,
+    :on => @schedule.calendar_date.id,
   ) %>
   <tr>
     <td><%= link_to @schedule.origin_time(trip).strftime(@time_template).strip, trip_url %></td>
@@ -46,11 +47,21 @@ content_for(:title, title)
       <fieldset>
         <legend>Select route</legend>
         <label>
+          <span>From:</span>
           <select name="origin" required>
             <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.destination.slug)%>
           </select>
+        </label>
+        <label>
+          <span>To:</span>
           <select name="destination" required>
             <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.origin.slug)%>
+          </select>
+        </label>
+        <label>
+          <span>On:</span>
+          <select name="on" required>
+            <%= options_for_select(@dates.map {|d| [d.to_date.to_formatted_s(:long), d.id]}, @schedule.calendar_date.id)%>
           </select>
         </label>
         <input type=submit value=Submit>

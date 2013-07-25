@@ -19,8 +19,28 @@
 
 # Learn more: http://github.com/javan/whenever
 
-job_type :rake_with_env, "cd :path && export NYPT_DB_PASSWORD=\"#{ENV['NYPT_DB_PASSWORD']}\" && RAILS_ENV=:environment bundle exec rake :task --silent :output"
+%w{NYPT_DB_PASSWORD NJT_DEVELOPER_USERNAME NJT_DEVELOPER_PASSWORD}.each do |name|
+  env name, ENV[name]
+end
 
 every 4.minutes do
-  rake_with_env 'nypt:save_departures', :environment => 'development'
+  rake(
+    'nypt:save_departures',
+    :environment => 'development',
+    :output => {
+      :standard => '/var/log/nypt/save_departures.stdout',
+      :error => '/var/log/nypt/save_departures.stderr',
+    }
+  )
+end
+
+every :day, :at => '9:00am' do
+  rake(
+    'njt:download_rail_gtfs',
+    :environment => 'development',
+    :output => {
+      :standard => '/var/log/nypt/download_rail_gtfs.stdout',
+      :error => '/var/log/nypt/download_rail_gtfs.stderr',
+    }
+  )
 end

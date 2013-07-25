@@ -11,13 +11,20 @@ class CalendarDate < ActiveRecord::Base
   end
 
   def self.for_time(time_string)
-    # If it is in the 11PM hour and the input time is in the 12AM hour,
-    # the date for the string is tomorrow.
-    if local_time.strftime('%H').to_i.eql?(23) && time_string.strip.to_i.eql?(12)
-      return tomorrow
+    current_hour = local_time.strftime('%H').to_i
+    input_hour = time_string.strip.to_i
+
+    # If it is between midnight and 4am and the input hour is between midnight
+    # and 3am, treat the input time as belonging to yesterday.
+    if (current_hour < 4) && [12, 1, 2, 3].include?(input_hour)
+      return yesterday
     end
 
     today
+  end
+
+  def self.from_date(date)
+    where(:id => date.strftime('%Y%m%d')).first
   end
 
   def self.local_time(time_str = nil)
@@ -43,5 +50,13 @@ class CalendarDate < ActiveRecord::Base
 
   def self.tomorrow
     where(:id => date_integer+1).first
+  end
+
+  def self.yesterday
+    where(:id => date_integer-1).first
+  end
+
+  def to_date
+    DateTime.parse(self.id.to_s).to_date
   end
 end

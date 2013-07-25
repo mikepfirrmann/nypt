@@ -5,7 +5,9 @@ namespace :gtfs do
 
   desc "Load GTFS data from a zip file into memory"
   task :load_into_memory => :environment do
-    $nj_transit = GTFS::Source.build(File.join(Rails.root, 'var', 'njt-gtfs.zip'))
+    $nj_transit = GTFS::Source.build(File.join(
+      Rails.root, 'var', 'gtfs', 'njt', 'rail', 'current.zip'
+    ))
   end
 
   desc "Save all GTFS data into a database"
@@ -88,15 +90,14 @@ namespace :gtfs do
 
     # This is too big. Takes too long. Don't do this. If we need shapes, read file line by line.
     $nj_transit.each_shape do |old_obj|
-# puts "#{old_obj.id}, #{old_obj.pt_lat}, #{old_obj.pt_lon}"
-      # new_obj = Shape.new do |obj|
-      #   obj.id = old_obj.id
-      #   obj.latitude = old_obj.pt_lat
-      #   obj.longitude = old_obj.pt_lon
-      #   obj.sequence = old_obj.pt_sequence
-      #   obj.distance_traveled = old_obj.dist_traveled
-      # end
-      # new_obj.save
+      new_obj = Shape.new do |obj|
+        obj.id = old_obj.id
+        obj.latitude = old_obj.pt_lat
+        obj.longitude = old_obj.pt_lon
+        obj.sequence = old_obj.pt_sequence
+        obj.distance_traveled = old_obj.dist_traveled
+      end
+      new_obj.save
     end
   end
 

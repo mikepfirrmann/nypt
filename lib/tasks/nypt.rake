@@ -7,14 +7,24 @@ namespace :nypt do
   desc "Save any listed track numbers for New York Penn Station departures"
   task :save_departures => :environment do
 
-    req = Net::HTTP.get_response(URI.parse(NYP_DEPARTURE_VISION_URL))
-    html = req.body
+    response = Net::HTTP.get_response(URI.parse(NYP_DEPARTURE_VISION_URL))
+    unless response.code.to_i.eql?(200)
+      raise "Did not receive HTTP 200 response when requesting NYPT departure vision. Code: #{response.code}"
+    end
+    html = response.body
+    raise "Received empty response for NYPT departure vision" if html.empty?
 
-    html_document = Nokogiri::HTML(html)
-    rows = html_document.css('table')[1].css('tr')
+    unless html_document = Nokogiri::HTML(html)
+      raise "Received invalid HTML for NYPT departure vision"
+    end
 
+    unless departure_table = html_document.css('table')[1]
+      raise "Could not find departures table in NYPT departure vision DOM"
+    end
+
+    time = nil
     block_id = nil
-    rows.each do |row|
+    departure_table.css('tr').each do |row|
       columns = row.css('td').map { |col| col.content.strip }
 
       if block_id.nil?

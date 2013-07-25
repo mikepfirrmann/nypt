@@ -1,5 +1,5 @@
 <%
-title="#{@arrival_times.first.strftime(@time_template)} Departure from #{@stations.first.long_name} to #{@stations.last.long_name}"
+title="#{@departure_time.strftime(@time_template)} Departure from #{@origin.long_name} to #{@destination.long_name} on #{@on.to_date.to_formatted_s(:long_ordinal)}"
 content_for(:title, title)
 %><h1><%=h title %></h1>
 
@@ -49,7 +49,8 @@ content_for(:title, title)
         :controller => 'schedule',
         :action => 'index',
         :origin => @origin.slug,
-        :destination => @destination.slug
+        :destination => @destination.slug,
+        :on => @on,
       )
     ) %>
   </nav>

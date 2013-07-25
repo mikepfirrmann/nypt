@@ -20,6 +20,10 @@ class TripsController < ApplicationController
       @destination = Stop.where(:slug => params[:destination]).first
     end
 
+    @departure_time = stop_times.select { |t| t.stop.eql?(@origin) }.first.arrival_time.real_local_time
+
+    @on = CalendarDate.where(:id => params[:on]).first
+
     @track_history = @trip.history
 
     respond_to do |format|
@@ -30,9 +34,11 @@ class TripsController < ApplicationController
           :json => {
             :trip => @trip,
             :stations => @stations,
+            :departure_time => @departure_time,
             :arrival_times => @arrival_times,
             :destination => @destination,
             :track_history => @track_history,
+            :on => @on,
           }
         )
       }
