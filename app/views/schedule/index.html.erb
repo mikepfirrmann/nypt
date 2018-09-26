@@ -1,41 +1,74 @@
 <%
-title="Trains from #{@schedule.origin.short_name} to #{@schedule.destination.short_name} on #{@schedule.calendar_date.to_date.to_formatted_s(:long_ordinal)}"
+if is_mobile?
+  title="#{@schedule.origin.short_name} to #{@schedule.destination.short_name} on #{@schedule.calendar_date.to_date.strftime('%b %e')}"
+else
+  title="Trains from #{@schedule.origin.short_name} to #{@schedule.destination.short_name} on #{@schedule.calendar_date.to_date.to_formatted_s(:long_ordinal)}"
+end
 content_for(:title, title)
-%><h1><%=h title %></h1>
+%>
+<div class="page-header">
+  <h1><%=h title %></h1>
+</div>
 
-<table>
-  <tr>
-    <th>Depart</th>
-    <th>Arrive</th>
-    <% if @departs_ny_penn %>
-      <th>Track</th>
-    <% end %>
-  </tr>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Depart</th>
+      <th>Arrive</th>
+      <% if @departs_ny_penn %>
+        <th>Track</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+<% next_found = false %>
 <% @trips.each do |trip| %>
-  <% trip_url = url_for(
+  <%
+  trip_url = url_for(
     :controller => 'trips',
     :action => 'show',
     :id => trip.id,
     :origin => @schedule.origin.slug,
     :destination => @schedule.destination.slug,
     :on => @schedule.calendar_date.id,
-  ) %>
-  <tr>
+  )
+  if @schedule.origin_time(trip) >= @now && !next_found
+    class_name = 'active'
+    next_found = true
+  else
+    class_name = ''
+  end
+  %>
+  <tr class="<%=class_name%>">
     <td><%= link_to @schedule.origin_time(trip).strftime(@time_template).strip, trip_url %></td>
     <td><%= link_to @schedule.destination_time(trip).strftime(@time_template).strip, trip_url %></td>
     <% if @departs_ny_penn %>
       <td><%=
-        trip.predict_track.map do |track|
+        tracks = trip.predict_track
+        tracks = tracks.first(4) if is_mobile?
+        tracks.map do |track|
           if track[:today]
             track[:number]
           else
-            "#{track[:number]} (#{track[:count]}x #{number_to_percentage(track[:confidence]*100, :precision => 0)})"
+            percentage = number_to_percentage(track[:confidence]*100, :precision => 0)
+            case percentage.to_i
+            when 40..100
+              badge_class = 'success'
+            when 30..40
+              badge_class = 'primary'
+            when 18..30
+              badge_class = 'warning'
+            when 0..18
+              badge_class = 'danger'
+            end
+            "<strong>#{track[:number]}</strong> <span class='label label-#{badge_class}'>#{track[:count]}x #{percentage}</span>"
           end
-        end.join(', ')
+        end.join(is_mobile? ? '<br>' : ', ').html_safe
       %></td>
     <% end %>
   </tr>
 <% end %>
+  </tbody>
 </table>
 <span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>
 
@@ -43,28 +76,30 @@ content_for(:title, title)
 
 <footer>
   <nav>
-    <form action='/' method=get>
+    <form action='/' method=get role=form>
       <fieldset>
-        <legend>Select route</legend>
-        <label>
-          <span>From:</span>
-          <select name="origin" required>
+        <legend>Change route</legend>
+        <div class="form-group">
+          <label for="originSelect">From</label>
+          <select id="originSelect" class="form-control" name="origin" required>
             <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.destination.slug)%>
           </select>
-        </label>
-        <label>
-          <span>To:</span>
-          <select name="destination" required>
+        </div>
+        <div class="form-group">
+          <label for="toSelect">To</label>
+          <select id="toSelect" class="form-control" name="destination" required>
             <%= options_for_select(@stations.map {|s| [s.short_name, s.slug]}, @schedule.origin.slug)%>
           </select>
-        </label>
-        <label>
-          <span>On:</span>
-          <select name="on" required>
+        </div>
+        <div class="form-group">
+          <label for="onSelect">On</label>
+          <select id="onSelect"class="form-control" name="on" required>
             <%= options_for_select(@dates.map {|d| [d.to_date.to_formatted_s(:long), d.id]}, @schedule.calendar_date.id)%>
           </select>
-        </label>
-        <input type=submit value=Submit>
+        </div>
+        <div class="form-group">
+          <input type=submit value="Select Route" class="btn btn-block btn-primary">
+        </div>
       </fieldset>
     </form>
   </nav>

@@ -2,7 +2,7 @@ class Schedule
   NEW_YORK_PENN_ID = 105
   MORRIS_PLAINS_ID = 91
 
-  NJT_RAIL_ROUTE_TYPE = 2
+  NJT_RAIL_ROUTE_TYPES = [2, 3]
 
   attr_reader :origin, :destination, :calendar_date
 
@@ -10,13 +10,13 @@ class Schedule
     if origin_id.is_a?(Fixnum) || origin_id.nil?
       @origin = Stop.find(origin_id || NEW_YORK_PENN_ID)
     elsif origin_id.is_a?(String)
-      @origin = Stop.where(:route_type => NJT_RAIL_ROUTE_TYPE, :slug => origin_id).first
+      @origin = Stop.where(:route_type => NJT_RAIL_ROUTE_TYPES, :slug => origin_id).first
     end
 
     if destination_id.is_a?(Fixnum) || destination_id.nil?
       @destination = Stop.find(destination_id || MORRIS_PLAINS_ID)
     elsif destination_id.is_a?(String)
-      @destination = Stop.where(:route_type => NJT_RAIL_ROUTE_TYPE, :slug => destination_id).first
+      @destination = Stop.where(:route_type => NJT_RAIL_ROUTE_TYPES, :slug => destination_id).first
     end
 
     @calendar_date = CalendarDate.find(calendar_date_id) rescue CalendarDate.today

@@ -1,4 +1,6 @@
 class Trip < ActiveRecord::Base
+  MAXIMUM_DAYS_BETWEEN_DEPARTURES = 10
+
   belongs_to :route
   belongs_to :shape
   belongs_to :block
@@ -9,7 +11,24 @@ class Trip < ActiveRecord::Base
   has_many :stops, :through => :stop_times
 
   def history
-    departures.sort_by { |d| d.calendar_date_id }.reverse
+    complete_history = departures.sort_by { |d| d.calendar_date_id }.reverse
+
+    last_usable_index = 0
+
+    date_history = complete_history.map { |d| d.calendar_date.id }
+    date_history.each_with_index do |date, index|
+      previous_date = date_history[index + 1]
+      next if previous_date.nil?
+
+      days_since_last_departure = date - previous_date
+
+      if days_since_last_departure > MAXIMUM_DAYS_BETWEEN_DEPARTURES
+        last_usable_index = index
+        break
+      end
+    end
+
+    complete_history.first(last_usable_index + 1)
   end
 
   def predict_track

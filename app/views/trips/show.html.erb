@@ -1,19 +1,17 @@
 <%
-title="#{@departure_time.strftime(@time_template)} Departure from #{@origin.long_name} to #{@destination.long_name} on #{@on.to_date.to_formatted_s(:long_ordinal)}"
+if is_mobile?
+	title = "#{@departure_time.strftime(@time_template)} #{@origin.short_name} to #{@destination.short_name} on #{@on.to_date.strftime('%b %e')}"
+else
+	title = "#{@departure_time.strftime(@time_template)} Train from #{@origin.short_name} to #{@destination.short_name} on #{@on.to_date.to_formatted_s(:long_ordinal)}"
+end
 content_for(:title, title)
-%><h1><%=h title %></h1>
-
-<% if @track_history.is_a?(Array) && @track_history.size > 0 %>
-	<h2>Most Recent Tracks</h2>
-	<ol class="track-history">
-		<% @track_history.each do |departure| %>
-			<li class="past-departure"><%=h departure.track %></li>
-		<% end %>
-	</ol>
-<% end %>
+%>
+<div class="page-header">
+	<h1><%=h title %></h1>
+</div>
 
 <h2>Stops</h2>
-<table>
+<table class="table table-striped table-hover">
 	<thead>
 		<tr>
 			<th>Time</th>
@@ -25,9 +23,9 @@ content_for(:title, title)
 		@stations.size.times do |index|
 			case @stations[index]
 			when @origin
-				class_name = 'origin'
+				class_name = 'success'
 			when @destination
-				class_name = 'destination'
+				class_name = 'danger'
 			else
 				class_name = ''
 			end
@@ -39,7 +37,26 @@ content_for(:title, title)
 	<% end %>
 	</tbody>
 </table>
-<span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>
+
+<% if @track_history.is_a?(Array) && @track_history.size > 0 %>
+	<h2>Most Recent Tracks</h2>
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Track</th>
+			</tr>
+		</thead>
+		<tbody>
+		<% @track_history.each do |departure| %>
+			<tr>
+				<td><%=h departure.calendar_date.to_date.strftime('%A, %b %e') %></td>
+				<td><%=h departure.track %></td>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
+<% end %>
 
 <footer>
   <nav>
@@ -54,4 +71,6 @@ content_for(:title, title)
       )
     ) %>
   </nav>
+
+	<span style="display: none">Generated in <%=h Time.now - @start %> seconds</span>
 </footer>

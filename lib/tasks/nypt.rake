@@ -25,44 +25,43 @@ namespace :nypt do
     time = nil
     block_id = nil
     departure_table.css('tr').each do |row|
+      next if row.css('a[href^=train_stops]').empty?
+
       columns = row.css('td').map { |col| col.content.strip }
+      _, time, _, track, _, block_id, _ = columns
+      track = track.to_i
 
-      if block_id.nil?
-        time, block_id = columns.first.gsub(/\s/, '').split('/')
-      else
-        track = columns.first.gsub(/[^0-9]/, '').to_i
-
-        if track > 0
-          calendar_date = CalendarDate.for_time time
-          block = Block.where(:id => block_id.to_i).first
-
-          if calendar_date && block
-            trip = Trip.where(
-              :service_id => calendar_date.services.map(&:id),
-              :block_id => block.id
-            ).first
-
-            if departure = Departure.where(
-              :calendar_date_id => calendar_date.id,
-              :trip_id => trip.id
-            ).first
-              unless track.eql?(departure.track)
-                departure.track = track
-                departure.save
-              end
-            else
-              departure = Departure.new do |departure|
-                departure.trip_id = trip.id
-                departure.calendar_date_id = calendar_date.id
-                departure.track = track
-              end
-              departure.save
-            end
-          end
-        end
-
-        block_id = nil
+      unless (1..21).include?(track)
+        next
       end
+
+      calendar_date = CalendarDate.for_time time
+      block = Block.where(:id => block_id.to_i).first
+
+      if calendar_date && block
+        trip = Trip.where(
+          :service_id => calendar_date.services.map(&:id),
+          :block_id => block.id
+        ).first
+
+        if departure = Departure.where(
+          :calendar_date_id => calendar_date.id,
+          :trip_id => trip.id
+        ).first
+          unless track.eql?(departure.track)
+            departure.track = track
+            departure.save
+          end
+        else
+          departure = Departure.new do |departure|
+            departure.trip_id = trip.id
+            departure.calendar_date_id = calendar_date.id
+            departure.track = track
+          end
+          departure.save
+        end
+      end
+
     end
 
   end

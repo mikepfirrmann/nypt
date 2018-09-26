@@ -1,4 +1,5 @@
 require 'pseudo_time'
+# require 'user_agent'
 
 class TripsController < ApplicationController
   # GET /trips/1
