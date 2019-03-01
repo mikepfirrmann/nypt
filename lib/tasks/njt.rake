@@ -73,7 +73,7 @@ namespace :njt do
     GTFS_NJT_RAIL_ROOT = File.join(Rails.root.to_s, 'var', 'gtfs', 'njt', 'rail')
 
     current_gtfs_path = File.join(GTFS_NJT_RAIL_ROOT, 'current.zip')
-    current_hash = Digest::SHA1.file(current_gtfs_path).hexdigest
+    current_hash = Digest::SHA1.file(current_gtfs_path).hexdigest rescue ''
 
     reload_data = false
     unless current_hash.eql?(downloaded_hash)
